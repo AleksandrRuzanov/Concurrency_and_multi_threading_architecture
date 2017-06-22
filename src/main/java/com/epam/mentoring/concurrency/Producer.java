@@ -2,7 +2,7 @@ package com.epam.mentoring.concurrency;
 
 import org.apache.log4j.Logger;
 
-import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 
 /**
@@ -12,7 +12,7 @@ public class Producer extends Common implements Runnable {
     private static final Logger LOG = Logger.getLogger(Producer.class);
     private final Random random;
 
-    public Producer(List<EntityNumber> queue, String threadName, int delay, Random random) {
+    public Producer(Queue<EntityNumber> queue, String threadName, int delay, Random random) {
         super(queue, threadName, delay);
         this.random = random;
     }
@@ -32,17 +32,12 @@ public class Producer extends Common implements Runnable {
     }
 
     private void putEntity(EntityNumber entity) throws InterruptedException {
-        while (getQueue().size() == ProducerConsumer.SIZE_ARRAY) {
-            synchronized (getQueue()) {
-                LOG.info("!!!queue is busy");
-                getQueue().wait();
-            }
+        while (getQueue().size() >= ProducerConsumer.SIZE_ARRAY) {
+            LOG.info("!!!queue is busy");
+            sleep(getDelay());
         }
+        LOG.info("add queue queue.size=" + getQueue().size());
+        getQueue().add(entity);
 
-        synchronized (getQueue()) {
-            LOG.info("add queue queue.size=" + getQueue().size());
-            getQueue().add(entity);
-            getQueue().notifyAll();
-        }
     }
 }

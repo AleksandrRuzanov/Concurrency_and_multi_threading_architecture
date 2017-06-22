@@ -5,10 +5,7 @@ import org.apache.log4j.Logger;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Aleksandr_Ruzanov on 21.06.2017.
@@ -17,7 +14,7 @@ public class Filer extends Common implements Runnable {
 
     private static final Logger LOG = Logger.getLogger(Filer.class);
 
-    public Filer(List<EntityNumber> queue, String threadName, int delay) {
+    public Filer(Queue<EntityNumber> queue, String threadName, int delay) {
         super(queue, threadName, delay);
     }
 

@@ -1,22 +1,23 @@
 package com.epam.mentoring.concurrency;
 
 import java.util.List;
+import java.util.Queue;
 
 /**
  * Created by Aleksandr_Ruzanov on 21.06.2017.
  */
 public class Common {
     private final String threadName;
-    private List<EntityNumber> queue;
+    private Queue<EntityNumber> queue;
     private final int delay;
 
-    public Common(List<EntityNumber> queue, String threadName, int delay) {
+    public Common(Queue<EntityNumber> queue, String threadName, int delay) {
         this.queue = queue;
         this.delay = delay;
         this.threadName = threadName;
     }
 
-    public List<EntityNumber> getQueue() {
+    public Queue<EntityNumber> getQueue() {
         return queue;
     }
 

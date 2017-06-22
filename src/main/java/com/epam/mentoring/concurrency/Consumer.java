@@ -2,16 +2,16 @@ package com.epam.mentoring.concurrency;
 
 import org.apache.log4j.Logger;
 
-import java.util.List;
+import java.util.Queue;
 
 /**
  * Created by Aleksandr_Ruzanov on 20.06.2017.
  */
 public class Consumer extends Common implements Runnable {
     private static final Logger LOG = Logger.getLogger(Consumer.class);
-    private List<EntityNumber> queueHandled;
+    private Queue<EntityNumber> queueHandled;
 
-    public Consumer(List<EntityNumber> queue, List<EntityNumber> queueHandled, String threadName, int delay) {
+    public Consumer(Queue<EntityNumber> queue, Queue<EntityNumber> queueHandled, String threadName, int delay) {
         super(queue, threadName, delay);
         this.queueHandled = queueHandled;
 
@@ -33,26 +33,13 @@ public class Consumer extends Common implements Runnable {
 
     private EntityNumber getEntity() throws InterruptedException {
         while (getQueue().isEmpty()) {
-            synchronized (getQueue()) {
-                LOG.info("!!!queue is empty");
-                getQueue().wait();
-            }
+            LOG.info("!!!queue is empty");
+            sleep(getDelay());
         }
-        EntityNumber entity = null;
-        synchronized (getQueue()) {
-            if (!getQueue().isEmpty())
-                entity = getQueue().remove(0);
-            if (entity != null) {
-                entity.setValueName(entity.getValue() + " - number was handled");
-                LOG.info("get is empty=" + entity + " queue.size=" + getQueue().size());
-            } else
-                LOG.info("get is empty is null");
-            getQueue().notifyAll();
-        }
-        if (entity != null)
-            synchronized (queueHandled) {
-                queueHandled.add(entity);
-            }
+        EntityNumber entity = getQueue().poll();
+        entity.setValueName(entity.getValue() + " - number was handled");
+        LOG.info("get is empty=" + entity + " queue.size=" + getQueue().size());
+        queueHandled.add(entity);
         return entity;
 
     }
